@@ -1,0 +1,10 @@
+# Deuda técnica
+
+Este documento registra decisiones pragmáticas de la primera implementación y su impacto.
+
+| Atajo tomado | Por qué se tomó | Impacto | Cuándo pagarlo |
+|---|---|---|---|
+| Estilos CSS incluidos directamente en `views/layout.php`. | Permitió construir la interfaz completa sin configurar un pipeline de frontend. | El diseño y el marcado están acoplados; los cambios visuales se vuelven menos cómodos de mantener y reutilizar. | Cuando se agreguen más páginas o se requiera un sistema de diseño compartido. Extraer los estilos a un archivo CSS versionado. |
+| Lector de `.env` implementado a mano para el formato simple `CLAVE=VALOR`. | Evitó Composer y dependencias externas, como se pidió para la primera entrega. | No implementa toda la especificación de dotenv (por ejemplo, interpolación de variables o comentarios en línea); configuraciones más complejas pueden interpretarse de forma inesperada. | Antes de añadir configuraciones complejas o desplegar en varios entornos; documentar el formato admitido o adoptar un lector mantenido si se permite Composer. |
+| Los precios se manejan como `float` en PHP, aunque MySQL los almacena como `DECIMAL`. | Se mantuvo el contrato de modelos y servicios establecido en el diseño inicial. | Los cálculos monetarios con punto flotante pueden introducir pequeñas diferencias de precisión en operaciones acumuladas. | Antes de ampliar reportes, descuentos o cálculos monetarios; migrar el dominio a unidades menores enteras o una representación decimal exacta y añadir pruebas de redondeo. |
+| Las pruebas usan repositorios y PDO falsos en memoria, no una instancia real de MySQL. | Hace posible ejecutar `php tests/run.php` sin Composer, PHPUnit ni configuración de base de datos. | Se verifican reglas de Services, pero no la sintaxis SQL real, restricciones ni comportamiento de bloqueo/rollback del motor MySQL. | Antes de producción o de cambiar consultas/transacciones; añadir pruebas de integración contra MySQL con datos desechables. |
