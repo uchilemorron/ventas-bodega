@@ -49,3 +49,9 @@ DESIGN.MD
 5. Manejo de errores: registro inexistente devuelve null; error de base de datos lanza BaseDatosException; al usuario solo mensajes claros, nunca trazas.
 
 No generes código de la aplicación ni ejecutes tareas.
+
+
+
+## Fase 3 · Prompt 4 – schema.sql y seed.sql
+
+Con base en design.md, genera database/schema.sql que cree la base bodega_ventas en utf8mb4 (utf8mb4_unicode_ci, InnoDB) con las tablas producto y venta: PRIMARY KEY, FOREIGN KEY de venta a producto, UNIQUE en codigo y CHECK para precio_venta >= 0, stock_actual >= 0, stock_minimo >= 0 y cantidad > 0. Genera database/seed.sql con los 8 productos de prueba del caso (P001 a P008) con sus precios, stock y mínimos exactos.
