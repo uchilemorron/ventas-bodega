@@ -28,4 +28,24 @@ No incluyas funcionalidades que no estén en el contexto.
 Revisé D0.md. Corrige solo esto, sin cambiar lo demás: agrega en la tabla de requisitos no funcionales el RNF8 de manejo de errores: los errores de base de datos se capturan con excepciones propias, se registran internamente y al usuario solo se le muestra un mensaje claro, nunca trazas ni detalles técnicos.
 
 
-Revisé D0.md. Corrige solo esto, sin cambiar lo demás: agrega en la tabla de requisitos no funcionales el RNF8 de manejo de errores: los errores de base de datos se capturan con excepciones propias, se registran internamente y al usuario solo se le muestra un mensaje claro, nunca trazas ni detalles técnicos.
+## Fase 2 · Prompt 3 (Kiro spec) – requirements.md y design.md
+
+Lee D0.md y crea la especificación del sistema del minimarket «La Esquina». Todo en español.
+
+REQUIREMENTS.MD
+- Criterios de aceptación en formato EARS en español: «CUANDO <evento> EL SISTEMA DEBERÁ <respuesta>» y «SI <condición> ENTONCES EL SISTEMA DEBERÁ <respuesta>».
+- Agrupa los criterios por RF1, RF2, RF3, RF4 y RNF1 a RNF8, con los mismos identificadores de D0.md.
+- Cada regla RN1 a RN5 debe aparecer en al menos un criterio; indica entre paréntesis la RN que cubre, por ejemplo (RN2).
+- Al final, una tabla de trazabilidad RN → criterios.
+
+DESIGN.MD
+1. Arquitectura en capas Model → Repository → Service → Controller → views. Para cada capa, una tabla con qué hace y qué NO hace. Las reglas de negocio solo van en Services; los Repositories solo ejecutan SQL con PDO preparado.
+2. Base de datos bodega_ventas (utf8mb4) con dos tablas:
+   - producto: id_producto INT AUTO_INCREMENT PK, codigo VARCHAR(10) UNIQUE NOT NULL, nombre VARCHAR(100) NOT NULL, categoria VARCHAR(50) NOT NULL, precio_venta DECIMAL(10,2) NOT NULL CHECK (precio_venta >= 0), stock_actual INT NOT NULL CHECK (stock_actual >= 0), stock_minimo INT NOT NULL CHECK (stock_minimo >= 0).
+   - venta: id_venta INT AUTO_INCREMENT PK, id_producto INT NOT NULL FK a producto, cantidad INT NOT NULL CHECK (cantidad > 0), precio_unitario DECIMAL(10,2) NOT NULL, total DECIMAL(10,2) NOT NULL, fecha_hora DATETIME NOT NULL.
+   Muestra cada tabla con campo, tipo, clave y restricción, coherente con los datos de prueba (código P001, precios como 22.50).
+3. Contratos de clases con firmas tipadas en PHP 8 (namespace App\): Producto, Venta, ProductoRepository, VentaRepository, ProductoService, VentaService, ProductoController, VentaController y excepciones propias (ValidacionException, StockInsuficienteException, ProductoNoEncontradoException, BaseDatosException).
+4. Transacción de la venta: explica paso a paso el flujo de VentaService::registrarVenta(int $idProducto, int $cantidad): Venta con beginTransaction, SELECT ... FOR UPDATE del producto, validaciones, INSERT de la venta, UPDATE del stock, commit y rollBack en el catch.
+5. Manejo de errores: registro inexistente devuelve null; error de base de datos lanza BaseDatosException; al usuario solo mensajes claros, nunca trazas.
+
+No generes código de la aplicación ni ejecutes tareas.
