@@ -4,3 +4,5 @@
 | 1 · D0 | D0.md con problema, usuarios, proceso actual, RF1–RF4, RNF1–RNF7, RN1–RN5, fuera de alcance y supuestos | Faltaba un requisito no funcional de manejo de errores; pedí agregar el RNF8 | Sin RNF8 no quedaba trazado que los errores se manejen con excepciones propias y nunca se muestren trazas al usuario |
 
 | 2 · Especificación | requirements.md (Kiro spec) con EARS, RF1–RF4, RNF1–RNF8 y trazabilidad RN; design.md  con capas, tablas, contratos y transacción | (1) Agregué RF1-8: rechazar stock actual o mínimo negativo. (2) Corregí RF3-1 para que la venta guarde el precio unitario vigente. (3) Agregué CodigoDuplicadoException al diseño | (1) La BD tendrá CHECK stock ≥ 0 y ningún criterio lo rechazaba. (2) Si cambia el precio después, las ventas antiguas deben conservar su precio original. (3) RN4 necesitaba una excepción propia para dar un mensaje claro |
+
+| 3 · Base de datos | schema.sql con PK, FK, UNIQUE y CHECK; seed.sql con los 8 productos | Agregué CHECK también a precio_unitario y total de venta, e índice en fecha_hora | Evita totales negativos y acelera el listado de ventas del día (RF4) |
